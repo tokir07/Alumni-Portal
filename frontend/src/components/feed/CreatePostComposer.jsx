@@ -22,6 +22,12 @@ export const CreatePostComposer = ({
   onSaveEdit 
 }) => {
   const { currentUser, usersMap, createPost, editPost, showNotification } = useApp();
+
+  // Refs for inputs
+  const photoInputRef = useRef(null);
+  const videoInputRef = useRef(null);
+  const textareaRef = useRef(null);
+
   const [isOpen, setIsOpen] = useState(initialExpanded || !!editingPost);
   const [postType, setPostType] = useState(editingPost ? (editingPost.postType || editingPost.type || 'TEXT') : 'TEXT');
   const [visibility, setVisibility] = useState(editingPost ? (editingPost.visibility || 'PUBLIC') : 'PUBLIC');
@@ -31,11 +37,31 @@ export const CreatePostComposer = ({
   const [mentionQuery, setMentionQuery] = useState('');
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
 
+  // Job Opportunity State
+  const [jobTitle, setJobTitle] = useState(editingPost ? (editingPost.jobTitle || '') : '');
+  const [companyName, setCompanyName] = useState(editingPost ? (editingPost.companyName || '') : '');
+  const [jobLocation, setJobLocation] = useState(editingPost ? (editingPost.jobLocation || '') : '');
+  const [employmentType, setEmploymentType] = useState(editingPost ? (editingPost.employmentType || 'Full-time') : 'Full-time');
+  const [jobDescription, setJobDescription] = useState(editingPost ? (editingPost.jobDescription || '') : '');
+  const [jobUrl, setJobUrl] = useState(editingPost ? (editingPost.jobUrl || '') : '');
+
+  // Achievement State
+  const [achievementTitle, setAchievementTitle] = useState(editingPost ? (editingPost.achievementTitle || '') : '');
+  const [achievementOrg, setAchievementOrg] = useState(editingPost ? (editingPost.achievementOrganization || '') : '');
+  const [achievementDate, setAchievementDate] = useState(editingPost ? (editingPost.achievementDate || '') : '');
+  const [achievementDesc, setAchievementDesc] = useState(editingPost ? (editingPost.achievementDescription || '') : '');
+
   // Media files & preview
   const [mediaFiles, setMediaFiles] = useState([]);
   const [mediaFile, setMediaFile] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(editingPost ? (editingPost.image || editingPost.imageUrl || editingPost.videoUrl) : null);
   const [mediaType, setMediaType] = useState(null); // 'IMAGE' or 'VIDEO'
+
+  // Derived Helper Variables
+  const isAlumni = currentUser?.roleUpper === 'ALUMNI' || currentUser?.role === 'alumni';
+  const firstName = currentUser?.name ? currentUser.name.split(' ')[0] : 'there';
+  const roleSubtitle = isAlumni ? 'Alumni' : (currentUser?.roleUpper === 'ADMIN' ? 'Administrator' : 'Student');
+  const quickTags = ['#JECRC', '#Career', '#AlumniNetwork', '#Hiring', '#Achievement', '#Events'];
 
   // Reset Form
   const resetForm = () => {
